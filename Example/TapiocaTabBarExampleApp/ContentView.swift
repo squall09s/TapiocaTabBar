@@ -66,21 +66,42 @@ struct ContentView: View {
         
         ZStack {
             
-            
             selectedView(for: selectedTab)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             
-            TapiocaTabBar(
-                selectedIndex: Binding(
-                    get: { selectedTab.rawValue },
-                    set: { newValue in
-                        if let newTab = DemoTab(rawValue: newValue) {
-                            selectedTab = newTab
+            VStack {
+                
+                Text("Anchor Style")
+                
+                TapiocaTabBar(
+                    selectedIndex: Binding(
+                        get: { selectedTab.rawValue },
+                        set: { newValue in
+                            if let newTab = DemoTab(rawValue: newValue) {
+                                selectedTab = newTab
+                            }
                         }
-                    }
-                ),
-                items: tabs
-            )
+                    ),
+                    items: tabs,
+                    color: Color("mainColor"),
+                    style: .anchor
+                )
+                
+                Text("Flow Style")
+                
+                TapiocaTabBar(
+                    selectedIndex: Binding(
+                        get: { selectedTab.rawValue },
+                        set: { newValue in
+                            if let newTab = DemoTab(rawValue: newValue) {
+                                selectedTab = newTab
+                            }
+                        }
+                    ),
+                    items: tabs,
+                    color: Color("mainColor")
+                )
+            }
             .frame(maxHeight: .infinity, alignment: .bottom)
         }
     }

@@ -1,13 +1,17 @@
 import SwiftUI
 
-enum TapTapiocaTabBarStyle {
-    case standard
-    case scrollable
+public enum TapTapiocaTabBarStyle {
+    // In Flow style (default), the focus fluidly moves between tabs with a smooth animated capsule that follows the selected item.
+    //The label appears only on the active tab, giving the navigation a clean, lightweight, and dynamic feeling.
+    case flow
+    // In Anchor style, the main tab remains visually emphasized at all times with a fixed capsule and title, even when navigating to other tabs.
+    //Selection is indicated through subtle color and opacity changes, maintaining the spotlight on the primary action tab.
+    case anchor
 }
 
 public struct TapiocaTabBar: View {
     
-    var style: TapTapiocaTabBarStyle = .standard
+    var style: TapTapiocaTabBarStyle
     let color : Color
     
     @Namespace private var animationNamespace
@@ -18,12 +22,13 @@ public struct TapiocaTabBar: View {
     let items: [TapiocaTabBarItem]
         
     // Initialiseur personnalisé
-    public init(selectedIndex: Binding<Int>, items: [TapiocaTabBarItem], color : Color = .orange) {
+    public init(selectedIndex: Binding<Int>, items: [TapiocaTabBarItem], color : Color = .orange, style : TapTapiocaTabBarStyle = .flow) {
         // On affecte la valeur reçue (de type Binding<Int>) à la variable de stockage _selectedIndex
         // Cela configure correctement la propriété @Binding selectedIndex
         self._selectedIndex = selectedIndex
         self.items = items
         self.color = color
+        self.style = style
     }
     
     var heightSelectedItem : CGFloat = 50
@@ -50,15 +55,15 @@ public struct TapiocaTabBar: View {
                             TabBarItemView(
                                 item: item,
                                 isSelected: index == selectedIndex,
-                                color: color,
                                 height: heightSelectedItem,
                                 radiusLarge: radiusLarge,
                                 radiusSmall: radiusSmall,
                                 animationNamespace: animationNamespace,
-                                isFirst: index == 0
+                                isFirst: index == 0,
+                                style: style
                             )
                         }
-                        .foregroundColor(index == selectedIndex ? color : .white.opacity(0.5))
+                        .foregroundColor(index == selectedIndex ? ( (style == .flow || index == 0) ? color : .white) : .white.opacity(0.5) )
                         
                     }
                 }
@@ -163,37 +168,41 @@ struct CustomRoundedRectangle: Shape {
 private struct TabBarItemView: View {
     let item: TapiocaTabBarItem
     let isSelected: Bool
-    let color: Color
     let height: CGFloat
     let radiusLarge: CGFloat
     let radiusSmall: CGFloat
     let animationNamespace: Namespace.ID
     let isFirst: Bool
+    let style: TapTapiocaTabBarStyle
 
+    func showTitle() -> Bool {
+        return (isSelected && style == .flow) || (style == .anchor && isFirst)
+    }
+    
     var body: some View {
         HStack(spacing: 15) {
             item.icon.renderingMode(.template)
                 .resizable()
                 .frame(width: 22, height: 22)
 
-            if isSelected {
+            if self.showTitle() {
                 Text(item.title)
-                    .font(.system(size: 16, weight: .bold))
+                    .font(.system(size: 16, weight: .bold)).lineLimit(1).minimumScaleFactor(0.5)
             }
         }
         .frame(height: height)
-        .padding(.horizontal, isSelected ? 30 : 10)
+        .padding(.horizontal, self.showTitle() ? 30 : 10)
         .padding(.vertical, 0)
         .background(
             ZStack {
-                if isSelected {
+                if ( isSelected && style == .flow) || (style == .anchor && isFirst) {
                     CustomRoundedRectangle(
                         topLeft: isFirst ? radiusSmall : radiusLarge,
                         topRight: radiusLarge,
                         bottomLeft: isFirst ? radiusSmall : radiusLarge,
                         bottomRight: radiusLarge
                     )
-                    .fill(Color.white)
+                    .fill(style == .flow ? Color.white : ( isSelected ? .white : .white.opacity(0.1) ))
                     .matchedGeometryEffect(id: "selection", in: animationNamespace)
                 }
             }

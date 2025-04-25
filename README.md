@@ -20,6 +20,7 @@ Because tab bars can be fun, too.
 - Clean MVVM-friendly design
 - Works with full-screen ZStack layout
 - Easy integration and theming
+- Customizable color and style (`flow` and `anchor` modes)
 
 
 ---
@@ -100,7 +101,9 @@ struct ContentView: View {
                         }
                     }
                 ),
-                items: tabs
+                items: tabs,
+                color: .orange, // Default
+                style: .flow    // Default style
             )
             .frame(maxHeight: .infinity, alignment: .bottom)
         }
@@ -120,6 +123,20 @@ struct ContentView: View {
     }
 }
 ```
+
+---
+
+## 🎨 Available Styles
+
+### Flow – Dynamic and Adaptive Highlight
+
+In **Flow** style, the focus fluidly moves between tabs with a smooth animated capsule that follows the selected item.  
+The label appears only on the active tab, giving the navigation a clean, lightweight, and dynamic feeling.
+
+### Anchor – Fixed Main Tab Emphasis
+
+In **Anchor** style, the main tab remains visually emphasized at all times with a fixed capsule and title, even when navigating to other tabs.  
+Selection is indicated through subtle color and opacity changes, maintaining the spotlight on the primary action tab.
 
 ---
 
