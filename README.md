@@ -56,7 +56,9 @@ The label appears only on the active tab, giving the navigation a clean, lightwe
 In **Anchor** style, the main tab remains visually emphasized at all times with a fixed capsule and title, even when navigating to other tabs.  
 Selection is indicated through subtle color and opacity changes, maintaining the spotlight on the primary action tab.
 
-<img src="Assets/preview.gif" alt="TapiocaTabBar Animation Preview" style="width:100%; border-radius:12px;" />
+<p align="center">
+  <img src="Assets/preview.gif" alt="TapiocaTabBar Animation Preview" width="100%" style="border-radius:12px;" />
+</p>
 
 ---
 
