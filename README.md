@@ -41,7 +41,25 @@ Then import:
 import TapiocaTabBar
 ```
 
+
 ---
+
+## 🎨 Available Styles
+
+### Flow – Dynamic and Adaptive Highlight
+
+In **Flow** style, the focus fluidly moves between tabs with a smooth animated capsule that follows the selected item.  
+The label appears only on the active tab, giving the navigation a clean, lightweight, and dynamic feeling.
+
+### Anchor – Fixed Main Tab Emphasis
+
+In **Anchor** style, the main tab remains visually emphasized at all times with a fixed capsule and title, even when navigating to other tabs.  
+Selection is indicated through subtle color and opacity changes, maintaining the spotlight on the primary action tab.
+
+<img src="Assets/preview.gif" alt="TapiocaTabBar Animation Preview" style="width:100%; border-radius:12px;" />
+
+---
+
 
 ## 🧑‍💻 Example usage
 
@@ -123,20 +141,6 @@ struct ContentView: View {
     }
 }
 ```
-
----
-
-## 🎨 Available Styles
-
-### Flow – Dynamic and Adaptive Highlight
-
-In **Flow** style, the focus fluidly moves between tabs with a smooth animated capsule that follows the selected item.  
-The label appears only on the active tab, giving the navigation a clean, lightweight, and dynamic feeling.
-
-### Anchor – Fixed Main Tab Emphasis
-
-In **Anchor** style, the main tab remains visually emphasized at all times with a fixed capsule and title, even when navigating to other tabs.  
-Selection is indicated through subtle color and opacity changes, maintaining the spotlight on the primary action tab.
 
 ---
 

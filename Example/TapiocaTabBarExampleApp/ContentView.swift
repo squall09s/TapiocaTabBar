@@ -71,8 +71,6 @@ struct ContentView: View {
             
             VStack {
                 
-                Text("Anchor Style")
-                
                 TapiocaTabBar(
                     selectedIndex: Binding(
                         get: { selectedTab.rawValue },
@@ -87,20 +85,7 @@ struct ContentView: View {
                     style: .anchor
                 )
                 
-                Text("Flow Style")
-                
-                TapiocaTabBar(
-                    selectedIndex: Binding(
-                        get: { selectedTab.rawValue },
-                        set: { newValue in
-                            if let newTab = DemoTab(rawValue: newValue) {
-                                selectedTab = newTab
-                            }
-                        }
-                    ),
-                    items: tabs,
-                    color: Color("mainColor")
-                )
+              
             }
             .frame(maxHeight: .infinity, alignment: .bottom)
         }
@@ -129,6 +114,7 @@ struct ContentView: View {
 #Preview {
     ContentView()
 }
+
 
 
 struct HomeView: View {
