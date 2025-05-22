@@ -57,58 +57,44 @@ enum DemoTab: Int, CaseIterable, Identifiable {
 
 struct ContentView: View {
     
-    
-    @State private var selectedTab: DemoTab = .home
-    
-    let tabs = DemoTab.allCases.map(\.item)
-    
+    @StateObject private var viewModel = TapiocaTabBarViewModel(items: DemoTab.allCases.map(\.item))
+
     var body: some View {
-        
         ZStack {
-            
-            selectedView(for: selectedTab)
+          
+            selectedView(for: viewModel.selectedIndex)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-            
+
             VStack {
-                
                 TapiocaTabBar(
-                    selectedIndex: Binding(
-                        get: { selectedTab.rawValue },
-                        set: { newValue in
-                            if let newTab = DemoTab(rawValue: newValue) {
-                                selectedTab = newTab
-                            }
-                        }
-                    ),
-                    items: tabs,
+                    viewModel: viewModel,
                     color: Color("mainColor"),
                     style: .anchor
                 )
-                
-              
             }
             .frame(maxHeight: .infinity, alignment: .bottom)
         }
     }
-    
+
     @ViewBuilder
-    private func selectedView(for tab: DemoTab) -> some View {
+    private func selectedView(for index: Int) -> some View {
         
-        switch tab {
+        switch DemoTab(rawValue: index) ?? .home {
         case .home:
-            HomeView()
+             HomeView {
+                 viewModel.updateItem(at: 0, title: "Modifié 👍", icon: Image(systemName: "square.and.pencil"))
+             }
         case .favorites:
-            FavoritesView()
+             FavoritesView()
         case .profile:
-            ProfileView()
+             ProfileView()
         case .friends:
-            FriendsView()
+             FriendsView()
         case .messages:
-            MessageView()
-        
+             MessageView()
+            
         }
     }
-    
 }
 
 #Preview {
@@ -118,8 +104,15 @@ struct ContentView: View {
 
 
 struct HomeView: View {
+    var onUpdateTab: (() -> Void)? = nil
+
     var body: some View {
-        Text("🏠 Home")
+        VStack {
+            Text("🏠 Home")
+            Button("Modification dynamique") {
+                onUpdateTab?()
+            }.padding()
+        }
     }
 }
 

@@ -21,7 +21,8 @@ Because tab bars can be fun, too.
 - Works with full-screen ZStack layout
 - Easy integration and theming
 - Customizable color and style (`flow` and `anchor` modes)
-
+- Dynamic updates to tab titles and icons using `ObservableObject`
+- MVVM integration with external `TapiocaTabBarViewModel`
 
 ---
 
@@ -66,79 +67,34 @@ Selection is indicated through subtle color and opacity changes, maintaining the
 ## 🧑‍💻 Example usage
 
 ```swift
-enum DemoTab: Int, CaseIterable, Identifiable {
-    
-    case home
-    case favorites
-    case profile
-    
-    var id: Int { rawValue }
-    
-    var title: String {
-        switch self {
-        case .home:
-            return "Home"
-        case .favorites:
-            return "Favorites"
-        case .profile:
-            return "Profile"
-        }
-    }
-    
-    var icon: Image {
-        switch self {
-        case .home:
-            return Image("...")
-        case .favorites:
-            return Image("...")
-        case .profile:
-            return Image("...")
-        }
-    }
-    
-    var item: TapiocaTabBarItem {
-        TapiocaTabBarItem(icon: icon, title: title)
-    }
-}
-
 struct ContentView: View {
-    
-    @State private var selectedTab: DemoTab = .home
-    let tabs = DemoTab.allCases.map(\.item)
+    @StateObject private var viewModel = TapiocaTabBarViewModel(items: [
+        TapiocaTabBarItem(icon: Image(systemName: "house.fill"), title: "Home"),
+        TapiocaTabBarItem(icon: Image(systemName: "star.fill"), title: "Favorites"),
+        TapiocaTabBarItem(icon: Image(systemName: "person.fill"), title: "Profile")
+    ])
     
     var body: some View {
-        
         ZStack {
-            
-            selectedView(for: selectedTab).frame(maxWidth: .infinity, maxHeight: .infinity)
+            selectedView(for: viewModel.selectedIndex)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             
             TapiocaTabBar(
-                selectedIndex: Binding(
-                    get: { selectedTab.rawValue },
-                    set: { newValue in
-                        if let newTab = DemoTab(rawValue: newValue) {
-                            selectedTab = newTab
-                        }
-                    }
-                ),
-                items: tabs,
-                color: .orange, // Default
-                style: .flow    // Default style
+                viewModel: viewModel,
+                color: .orange,
+                style: .flow
             )
             .frame(maxHeight: .infinity, alignment: .bottom)
         }
     }
-    
+
     @ViewBuilder
-    private func selectedView(for tab: DemoTab) -> some View {
-        
-        switch tab {
-        case .home:
-            HomeView()
-        case .favorites:
-            FavoritesView()
-        case .profile:
-            ProfileView()
+    private func selectedView(for index: Int) -> some View {
+        switch index {
+        case 0: HomeView()
+        case 1: FavoritesView()
+        case 2: ProfileView()
+        default: EmptyView()
         }
     }
 }

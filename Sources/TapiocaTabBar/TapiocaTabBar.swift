@@ -9,6 +9,45 @@ public enum TapTapiocaTabBarStyle {
     case anchor
 }
 
+
+public class TapiocaTabBarViewModel: ObservableObject {
+    
+    @Published public var selectedIndex: Int = 0
+    @Published public var items: [TapiocaTabBarItem]
+
+    public var selectedItem: TapiocaTabBarItem? {
+        guard items.indices.contains(selectedIndex) else { return nil }
+        return items[selectedIndex]
+    }
+
+    public init(items: [TapiocaTabBarItem]) {
+        self.items = items
+    }
+
+    public func updateItem(at index: Int, title: String? = nil, icon: Image? = nil) {
+        guard items.indices.contains(index) else { return }
+        if let title = title {
+            items[index].title = title
+        }
+        if let icon = icon {
+            items[index].icon = icon
+        }
+    }
+}
+
+public class TapiocaTabBarItem: ObservableObject, Identifiable {
+    public let id = UUID()
+    @Published public var icon: Image
+    @Published public var title: String
+    
+    
+    public init(icon: Image, title: String) {
+        self.icon = icon
+        self.title = title
+    }
+}
+
+
 public struct TapiocaTabBar: View {
     
     var style: TapTapiocaTabBarStyle
@@ -18,15 +57,11 @@ public struct TapiocaTabBar: View {
     
     
     // Déclare une propriété liée à une valeur externe (par exemple un @State dans le parent)
-    @Binding var selectedIndex: Int
-    let items: [TapiocaTabBarItem]
+    @ObservedObject var viewModel: TapiocaTabBarViewModel
         
     // Initialiseur personnalisé
-    public init(selectedIndex: Binding<Int>, items: [TapiocaTabBarItem], color : Color = .orange, style : TapTapiocaTabBarStyle = .flow) {
-        // On affecte la valeur reçue (de type Binding<Int>) à la variable de stockage _selectedIndex
-        // Cela configure correctement la propriété @Binding selectedIndex
-        self._selectedIndex = selectedIndex
-        self.items = items
+    public init(viewModel: TapiocaTabBarViewModel, color : Color = .orange, style : TapTapiocaTabBarStyle = .flow) {
+        self.viewModel = viewModel
         self.color = color
         self.style = style
     }
@@ -45,16 +80,16 @@ public struct TapiocaTabBar: View {
             GeometryReader { _ in
                 
                 HStack {
-                    ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
+                    ForEach(Array(viewModel.items.enumerated()), id: \.element.id) { index, item in
                         
                         Button(action: {
                             withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                                selectedIndex = index
+                                viewModel.selectedIndex = index
                             }
                         }) {
                             TabBarItemView(
                                 item: item,
-                                isSelected: index == selectedIndex,
+                                isSelected: index == viewModel.selectedIndex,
                                 height: heightSelectedItem,
                                 radiusLarge: radiusLarge,
                                 radiusSmall: radiusSmall,
@@ -63,7 +98,7 @@ public struct TapiocaTabBar: View {
                                 style: style
                             )
                         }
-                        .foregroundColor(index == selectedIndex ? ( (style == .flow || index == 0) ? color : .white) : .white.opacity(0.5) )
+                        .foregroundColor(index == viewModel.selectedIndex ? ( (style == .flow || index == 0) ? color : .white) : .white.opacity(0.5) )
                         
                     }
                 }
@@ -86,6 +121,7 @@ public struct TapiocaTabBar: View {
     }
 }
 
+/*
 struct ContentView: View {
     @State private var selectedTab = 0
     let tabs = [
@@ -108,7 +144,7 @@ struct ContentView: View {
 #Preview {
     ContentView()
 }
-
+*/
 
 struct CustomRoundedRectangle: Shape {
     
@@ -166,7 +202,7 @@ struct CustomRoundedRectangle: Shape {
 }
 
 private struct TabBarItemView: View {
-    let item: TapiocaTabBarItem
+    @ObservedObject var item: TapiocaTabBarItem
     let isSelected: Bool
     let height: CGFloat
     let radiusLarge: CGFloat

@@ -6,12 +6,3 @@
 //
 
 import SwiftUI
-
-class TapiocaTabBarViewModel: ObservableObject {
-    @Published var selectedIndex: Int = 0
-    let items: [TapiocaTabBarItem]
-    
-    init(items: [TapiocaTabBarItem]) {
-        self.items = items
-    }
-}
