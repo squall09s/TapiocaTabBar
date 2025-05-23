@@ -156,10 +156,16 @@ private struct TabBarItemView: View {
     
     var body: some View {
         HStack(spacing: 15) {
-            item.icon.renderingMode(.template)
-                .resizable()
-                .aspectRatio(1, contentMode: .fit)
-                .frame(width: 22, height: 22)
+            ZStack {
+                Color.clear
+                item.icon
+                    .renderingMode(.template)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 22, height: 22)
+                    
+            }
+            .frame(width: 22, height: 22)
 
             if self.showTitle() {
                 Text(item.title)

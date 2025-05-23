@@ -82,7 +82,7 @@ struct ContentView: View {
         switch DemoTab(rawValue: index) ?? .home {
         case .home:
              HomeView {
-                 viewModel.updateItem(at: 0, title: "Modifié 👍", icon: Image(systemName: "square.and.pencil"))
+                 viewModel.updateItem(at: 0, title: "Modifié 👍", icon: Image("ic_game"))
              }
         case .favorites:
              FavoritesView()
