@@ -7,5 +7,15 @@
 
 import SwiftUI
 
-
+public class TapiocaTabBarItem: ObservableObject, Identifiable {
+    public let id = UUID()
+    @Published public var icon: Image
+    @Published public var title: String
+    
+    
+    public init(icon: Image, title: String) {
+        self.icon = icon
+        self.title = title
+    }
+}
 

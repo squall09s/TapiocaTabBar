@@ -10,43 +10,6 @@ public enum TapTapiocaTabBarStyle {
 }
 
 
-public class TapiocaTabBarViewModel: ObservableObject {
-    
-    @Published public var selectedIndex: Int = 0
-    @Published public var items: [TapiocaTabBarItem]
-
-    public var selectedItem: TapiocaTabBarItem? {
-        guard items.indices.contains(selectedIndex) else { return nil }
-        return items[selectedIndex]
-    }
-
-    public init(items: [TapiocaTabBarItem]) {
-        self.items = items
-    }
-
-    public func updateItem(at index: Int, title: String? = nil, icon: Image? = nil) {
-        guard items.indices.contains(index) else { return }
-        if let title = title {
-            items[index].title = title
-        }
-        if let icon = icon {
-            items[index].icon = icon
-        }
-    }
-}
-
-public class TapiocaTabBarItem: ObservableObject, Identifiable {
-    public let id = UUID()
-    @Published public var icon: Image
-    @Published public var title: String
-    
-    
-    public init(icon: Image, title: String) {
-        self.icon = icon
-        self.title = title
-    }
-}
-
 
 public struct TapiocaTabBar: View {
     
@@ -121,30 +84,6 @@ public struct TapiocaTabBar: View {
     }
 }
 
-/*
-struct ContentView: View {
-    @State private var selectedTab = 0
-    let tabs = [
-        TapiocaTabBarItem(icon: Image(systemName:"house.fill"), title: "Home"),
-        TapiocaTabBarItem(icon: Image(systemName: "star.fill"), title: "Favorites"),
-        TapiocaTabBarItem(icon: Image(systemName: "person.fill"), title: "Profile")
-    ]
-    
-    var body: some View {
-        VStack {
-            Spacer()
-            // Affichage du contenu ici
-            Text("Selected tab: \(tabs[selectedTab].title)")
-            Spacer()
-            TapiocaTabBar(selectedIndex: $selectedTab, items: tabs)
-        }
-    }
-}
-
-#Preview {
-    ContentView()
-}
-*/
 
 struct CustomRoundedRectangle: Shape {
     
@@ -219,6 +158,7 @@ private struct TabBarItemView: View {
         HStack(spacing: 15) {
             item.icon.renderingMode(.template)
                 .resizable()
+                .aspectRatio(1, contentMode: .fit)
                 .frame(width: 22, height: 22)
 
             if self.showTitle() {
